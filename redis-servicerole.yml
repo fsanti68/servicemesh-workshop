@@ -1,0 +1,9 @@
+apiVersion: "rbac.istio.io/v1alpha1"
+kind: ServiceRole
+metadata:
+  name: redis-user
+  namespace: development
+spec:
+  rules:
+  - services: ["redis-redis-ha.dev-commons.svc.cluster.local"]
+    methods: ["*"]

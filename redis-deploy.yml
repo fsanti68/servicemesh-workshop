@@ -1,0 +1,48 @@
+---
+apiVersion: apps/v1beta1
+kind: StatefulSet
+metadata:
+  namespace: dev-commons
+  name: redis-primary
+spec:
+  serviceName: redis-primary
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: redis-primary
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+      - name: redis-primary
+        image: redis:4.0.2-alpine
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 6379
+          name: redis-primary
+        volumeMounts:
+        - name: redis-primary
+          mountPath: /data
+  volumeClaimTemplates:
+  - metadata:
+      name: redis-primary
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 2Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: dev-commons
+  name: redis-primary
+  labels:
+    app: redis-primary
+spec:
+  type: NodePort
+  ports:
+  - port: 6379
+    name: redis-primary
+  selector:
+    app: redis-primary

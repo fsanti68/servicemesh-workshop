@@ -1,0 +1,49 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: development-sync-api
+  namespace: development
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sync-api-v1
+  namespace: development
+  labels:
+    app: sync-api
+    version: v1
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: sync-api
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: sync-api
+        version: v1
+    spec:
+      serviceAccountName: development-sync-api
+      containers:
+      - name: sync-api
+        image: fsanti68/sync-service:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sync-api
+  namespace: development
+  labels:
+    app: sync-api
+    service: sync-api
+spec:
+  type: NodePort
+  ports:
+  - port: 8080
+    name: http
+  selector:
+    app: sync-api

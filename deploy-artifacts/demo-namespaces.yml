@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+   name: dev-commons
+   labels:
+      name: dev-commons
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+   name: development
+   labels:
+      name: development
+
